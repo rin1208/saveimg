@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"github.com/urfave/cli"
 	"github.com/PuerkitoBio/goquery"
-	"unicode"
 )
 
 func main() {
@@ -100,18 +99,10 @@ func saveimg() {
 func key () {
     defer fmt.Println("Save completed!!")
     var siteurl string
-    var a, key, alice    string
+    var a, key  string
     fmt.Print("What is a keyword? :")
     fmt.Scan(&a)
-    for _, r := range a {
-        hira :=unicode.In(r, unicode.Hiragana)
-        kana :=unicode.In(r, unicode.Katakana)
-        if hira == true || kana == true {
-            alice = url.QueryEscape(a)
-			break 
-        }
-    }
-	key = alice
+    key = url.QueryEscape(a)
     siteurl ="https://twitter.com/search?q="+key+"&src=typed_query&f=image"
     fmt.Println(siteurl)
     var result []*url.URL
