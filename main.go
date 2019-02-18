@@ -100,19 +100,18 @@ func saveimg() {
 func key () {
     defer fmt.Println("Save completed!!")
     var siteurl string
-    var a, key   string
+    var a, key, alice    string
     fmt.Print("What is a keyword? :")
     fmt.Scan(&a)
-    for na , r := range a {
+    for _, r := range a {
         hira :=unicode.In(r, unicode.Hiragana)
         kana :=unicode.In(r, unicode.Katakana)
-        ni := na + 1
-        alice := a[na:ni]
         if hira == true || kana == true {
-            alice = url.QueryEscape(alice)
+            alice = url.QueryEscape(a)
+			break 
         }
-        key += alice 
     }
+	key = alice
     siteurl ="https://twitter.com/search?q="+key+"&src=typed_query&f=image"
     fmt.Println(siteurl)
     var result []*url.URL
@@ -145,4 +144,3 @@ func confirmurl(url string) bool {
 	use := true
 	return use
 }
-
