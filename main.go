@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"github.com/urfave/cli"
 	"github.com/PuerkitoBio/goquery"
+	"unicode"
 )
 
 func main() {
@@ -21,6 +22,8 @@ func main() {
 		saveimg()
 	}  else if c.Bool("site"){
 		savesite()
+	}  else if c.Bool("twitter"){
+        key()
 	} else {
 		var a string
 		fmt.Print("site URL or image URL? :")
@@ -44,6 +47,11 @@ func main() {
 		Name: "site, s",
 		Usage: "Save from website",
 	},
+	cli.BoolFlag {
+        Name: "twitter, t",
+        Usage: "Save from twitter keywords",
+    },
+
 }
     app.Run(os.Args)
 }
@@ -87,6 +95,46 @@ func saveimg() {
 		}
 	}
 }
+
+
+func key () {
+    defer fmt.Println("Save completed!!")
+    var siteurl string
+    var a, key   string
+    fmt.Print("What is a keyword? :")
+    fmt.Scan(&a)
+    for na , r := range a {
+        hira :=unicode.In(r, unicode.Hiragana)
+        kana :=unicode.In(r, unicode.Katakana)
+        ni := na + 1
+        alice := a[na:ni]
+        if hira == true || kana == true {
+            alice = url.QueryEscape(alice)
+        }
+        key += alice 
+    }
+    siteurl ="https://twitter.com/search?q="+key+"&src=typed_query&f=image"
+    fmt.Println(siteurl)
+    var result []*url.URL
+    doc, _ := goquery.NewDocument(siteurl)
+        doc.Find("img").Each(func(_ int, s *goquery.Selection) {
+            target, _ := s.Attr("src")
+            base, _ := url.Parse(siteurl)
+            targets, _ := url.Parse(target)
+            result = append(result, base.ResolveReference(targets))
+        })
+        for _, b := range result {
+            a := b.String()
+            log.Println(a)
+            _, err := exec.Command("wget", a).Output()
+            if err != nil {
+                log.Fatal("Save failed...", err)
+                }
+        }
+}
+
+
+
 
 func confirmurl(url string) bool {
 	_, err := http.Get(url)
