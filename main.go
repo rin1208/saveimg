@@ -1,5 +1,4 @@
 package main
-
 import (
 	"fmt"
 	"log"
@@ -15,7 +14,7 @@ func main() {
 	app := cli.NewApp()
     app.Name = "ImageSaveTool"
     app.Usage = "savetool"
-    app.Version = "1.0.0"
+    app.Version = "1.0.1"
     app.Action = func(c *cli.Context) error {
 	if c.Bool("image") {
 		saveimg()
